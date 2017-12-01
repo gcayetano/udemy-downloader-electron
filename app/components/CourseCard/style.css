@@ -1,0 +1,43 @@
+.card {
+    background-color: white;
+    height: 330px;
+    width: 250px;
+    border: 1px solid #cfcfcf;
+}
+
+.cardImage {
+    height: 120px;
+    background-color: gray;
+}
+
+.cardTitle {
+    margin-top: 10px;
+}
+
+.cardTitle > span {
+    font-size: 18px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.cardDesc {
+    margin-top: 15px;
+}
+
+.cardDesc > span {
+    margin-top: 10px;
+    font-size: 14px;
+    margin-left: 10px;
+    color: gray;
+}
+
+.cardBtn {
+    margin-top: 90px;
+    margin-right: 10px;
+}
+
+.cardBtn > button {
+    font-size: 18px;
+    color: gray;
+    border-radius: 50px;
+}
