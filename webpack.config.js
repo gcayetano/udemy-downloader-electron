@@ -18,8 +18,9 @@ const config = {
 		loaders: [
 			{ test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
 			{ test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ },
-			{ test: /\.css$/, loader: 'style-loader!css-loader' },
-			{ test: /\.less$/, loader: 'style-loader!css-loader!less-loader'}
+			{ test: /\.css$/, loader: 'style-loader!css-loader?modules=true&localIdentName=[name]__[local]___[hash:base64:5]' },
+			{ test: /\.less$/, loader: 'style-loader!css-loader!less-loader'},
+			{ test: /\.(png|jpg)$/, loader: 'url-loader?limit=99999' }
 		]
 	},
 	plugins: [
