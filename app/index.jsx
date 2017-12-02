@@ -5,12 +5,25 @@ import Header from './components/Header/index.jsx';
 import Footer from './components/Footer/index.jsx';
 import CourseList from './components/CoursesList/index.jsx';
 
-const App = () => (
-	<Grid fluid={true}>
-		<Header />
-		<CourseList />
-		{/* <Footer /> */}
-	</Grid>
-);
+class App extends React.Component {
+
+	constructor(props){
+		super(props);
+
+		this.state = {
+			auth: "Bearer AT8JxZYF44CsOwTXgCYnbXD0Atc83c93dqKHKNzR"
+		}
+	}
+
+	render() {
+		return (
+			<Grid fluid={true}>
+				<Header />
+				<CourseList authorization={this.state.auth} />
+				{/* <Footer /> */}
+			</Grid>
+		)
+	}
+}
 
 render(<App/>, document.getElementById('app'));
