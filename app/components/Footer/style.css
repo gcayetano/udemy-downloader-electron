@@ -1,0 +1,18 @@
+.footer {
+    position: fixed;
+    background-color: white;
+    bottom: 0;
+    width: 98%;
+    box-shadow: 0 -5px 5px -8px gray;
+    height: 30px;
+}
+
+.footer span:last-child {
+    color: gray;
+    margin-top: 5px;
+}
+
+.copy {
+    font-size: 10px;
+    margin-left: 10px;
+}
