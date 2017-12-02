@@ -9,5 +9,12 @@ header {
     width: 158px;
     height: 49px;
     margin-top: 10px;
-    margin-left: 25px;
+    /* margin-left: 25px; */
+}
+
+.settingsBtn {
+    float: right !important;
+    color: #dbdbdb;
+    margin-top: 15px;
+    margin-right: 25px;
 }

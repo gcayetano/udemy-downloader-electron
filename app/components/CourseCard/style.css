@@ -7,7 +7,7 @@
 
 .cardImage {
     height: 120px;
-    background-color: gray;
+    background-color: #dbdbdb;
 }
 
 .cardTitle {
@@ -38,6 +38,6 @@
 
 .cardBtn > button {
     font-size: 18px;
-    color: gray;
+    color: #dbdbdb;
     border-radius: 50px;
 }

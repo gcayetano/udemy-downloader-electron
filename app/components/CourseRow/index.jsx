@@ -1,16 +1,30 @@
 import React from 'react';
-import {Row, Col} from 'react-bootstrap';
+import {Row} from 'react-bootstrap';
 import styles from './style.css';
+import CourseCard from '../CourseCard/index.jsx';
 
-const cRow = (
-    <Row>
-        {/* Cards */}
-    </Row>
-);
 
 const CourseRow = (props) => {
 	return (
-		cRow
+		<Row className={styles.courseRow}>
+            {/* Cards */}
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
+        </Row>
 	);
 }
   
