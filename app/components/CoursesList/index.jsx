@@ -10,7 +10,7 @@ class CourseList extends React.Component {
 		super(props);
 		
         this.state = {
-          courses: []
+			courses: []
         };
 	}
 	
@@ -18,10 +18,8 @@ class CourseList extends React.Component {
         const header = {
             'Authorization': this.props.authorization,
             'Access-Control-Allow-Origin': '*'
-        }
-
-        let results = [];
-
+		}
+		
         axios.get("https://www.udemy.com/api-2.0/users/me/subscribed-courses?fields%5Bcourse%5D=@min,visible_instructors,image_240x135,image_480x270&page=1&page_size=12", {headers: header}).then((resp) => {
             this.setState({courses: resp.data.results});
             console.log(resp.data.results)
