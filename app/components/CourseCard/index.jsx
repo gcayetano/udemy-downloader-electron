@@ -1,8 +1,8 @@
-import {React, Component} from 'react';
+import React from 'react';
 import {Row, Button, Glyphicon} from 'react-bootstrap';
 import styles from './style.css';
 
-class CourseCard extends Component {
+class CourseCard extends React.Component {
 	render(){
 		return (
 			<div className={styles.card}>

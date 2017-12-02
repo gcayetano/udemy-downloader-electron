@@ -1,8 +1,8 @@
-import {React, Component} from 'react';
+import React from 'react';
 import {Row, Col, Button, Glyphicon} from 'react-bootstrap';
 import styles from './style.css';
 
-class Header extends Component {
+class Header extends React.Component {
 	render(){
 		return (
 			<header>
