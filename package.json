@@ -22,6 +22,7 @@
   },
   "homepage": "https://gitlab.com/gcayetano/udemy-downloader-electron#README",
   "dependencies": {
+    "axios": "^0.17.1",
     "react": "^16.1.1",
     "react-bootstrap": "^0.31.5",
     "react-dom": "^16.1.1",
