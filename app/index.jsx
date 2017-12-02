@@ -11,7 +11,7 @@ class App extends React.Component {
 		super(props);
 
 		this.state = {
-			auth: "Bearer AT8JxZYF44CsOwTXgCYnbXD0Atc83c93dqKHKNzR"
+			auth: ""
 		}
 	}
 
