@@ -1,6 +1,10 @@
 import React from 'react';
-import {Row, Col, Button, Glyphicon} from 'react-bootstrap';
+import {Row, Col, Button, Glyphicon, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import styles from './style.css';
+
+const settingsTooltip = (
+	<Tooltip id="tooltip">Configuración</Tooltip>
+);
 
 class Header extends React.Component {
 	render(){
@@ -11,7 +15,9 @@ class Header extends React.Component {
 						<img className={styles.logo} src={require(`../../../public/img/logo.png`)} />
 					</Col>
 					<Col md={10} xsHidden={true}>
-						<Button className={styles.settingsBtn}><Glyphicon glyph="wrench" /></Button>
+						<OverlayTrigger placement="bottom" overlay={settingsTooltip}>
+							<Button className={styles.settingsBtn}><Glyphicon glyph="wrench" /></Button>
+						</OverlayTrigger>
 					</Col>
 				</Row>
 			</header>
