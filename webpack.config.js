@@ -5,6 +5,8 @@ const BUILD_DIR = path.resolve(__dirname, 'public/built');
 const APP_DIR = path.resolve(__dirname, 'app');
 
 const config = {
+	watch: true,
+	target: 'electron-renderer',
 	entry: APP_DIR + '/index.jsx',
 	output: {
 		path: BUILD_DIR,
