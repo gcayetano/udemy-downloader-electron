@@ -39,6 +39,7 @@
     "css-loader": "^0.28.7",
     "electron": "1.7.9",
     "electron-rebuild": "^1.6.0",
+    "electron-reload": "^1.2.2",
     "file-loader": "^1.1.5",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",

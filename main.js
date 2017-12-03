@@ -2,13 +2,20 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 
+// Enable live reload for all the files inside your project directory
+let electronHot = {
+  electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd')
+};
+
+require('electron-reload')(__dirname, electronHot);
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600});
+  win = new BrowserWindow({width: 1100, height: 700});
 
   // and load the index.html of the app.
   win.loadURL(url.format({
