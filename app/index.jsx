@@ -7,8 +7,10 @@ import Header from './components/Header/index.jsx';
 import Footer from './components/Footer/index.jsx';
 import CourseList from './components/CoursesList/index.jsx';
 
-const settingsFile = path.join(__dirname, 'config.json');
-console.log(path.join(__dirname, "../", "public"))
+const settingsFile = path.join(__dirname, '..', 'config.json');
+const downloadPath = path.resolve(path.join(__dirname, '..', 'Descargas'));
+
+let settingsFileExists = false;
 
 class App extends React.Component {
 
@@ -17,18 +19,28 @@ class App extends React.Component {
 
 		this.state = {
 			showAuthModal: false,
-			auth: "Bearer AT8JxZYF44CsOwTXgCYnbXD0Atc83c93dqKHKNzR"
+			auth: ""
 		}
 
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
-		// this.handleChange = this.handleChange.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 		this.saveSettings = this.saveSettings.bind(this);
 	}
 
 	componentWillMount() {
-		if(!fs.existsSync(settingsFile)){
+		settingsFileExists = fs.existsSync(settingsFile);
+
+		if(!settingsFileExists){
 			this.openModal();
+		}else{
+			let config = JSON.parse(fs.readFileSync(settingsFile));
+
+			if(!config.authorization || config.authorization == ""){
+				this.openModal();
+			}else{
+				this.setState({auth: config.authorization});
+			}
 		}
 	}
 
@@ -45,19 +57,23 @@ class App extends React.Component {
 			"authorization": this.state.auth
 		}
 
-		fs.writeFileSync(settingsFile, conf);
+		if(!settingsFileExists){
+			conf.download_dir = downloadPath;
+		}
+
+		fs.writeFileSync(settingsFile, JSON.stringify(conf, null, 2));
 		this.closeModal();
 	}
 
-	// handleChange(e) {
-	// 	let value = e.target.value;
-
-	// 	if(!value.includes("Bearer")) {
-	// 		this.setState({auth: "Bearer " + value});
-	// 	}else{
-	// 		this.setState({auth: value});
-	// 	}
-	// }
+	handleChange(e) {
+		let value = e.target.value;
+		console.log(value)
+		if(!value.includes("Bearer")) {
+			this.setState({auth: "Bearer " + value});
+		}else{
+			this.setState({auth: value});
+		}
+	}
 
 	render() {
 		return (
@@ -76,8 +92,8 @@ class App extends React.Component {
 							<ControlLabel>Authorization token</ControlLabel>
 							<FormControl
 								type="text"
-								value={this.state.value}
 								placeholder="Introduce tu token de autenticación"
+								onChange={this.handleChange}
 							/>
 						</FormGroup>
 					</Modal.Body>

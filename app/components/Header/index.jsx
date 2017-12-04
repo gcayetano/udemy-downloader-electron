@@ -11,7 +11,7 @@ class Header extends React.Component {
 		return (
 			<header>
 				<Row>
-					<Col md={2} lg={2} xs={1} className="text-center">
+					<Col md={2} lg={2} xs={1}>
 						<img className={styles.logo} src={require(`../../../public/img/logo.png`)} />
 					</Col>
 					<Col md={10} xsHidden={true}>
