@@ -8,14 +8,14 @@ class DownloadModal extends React.Component {
 
 	constructor(props){
 		super(props);
-		
+		console.log(this.props.show)
 		this.state = {
 			modalTitle: 'Descargando...',
 			finished: false,
 			currentProgress: 0,
 			currentFile: '',
 			currentDownload: 0,
-			showModal: true
+			showModal: this.props.show
 		}
 
 		this.downloadFromUrl = this.downloadFromUrl.bind(this);
@@ -25,6 +25,12 @@ class DownloadModal extends React.Component {
 
 	componentDidMount(){
 		this.downloadCourse(this.props.media);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.show) {
+			this.setState({showModal: nextProps.show, finished: false});
+		}
 	}
 
 	closeModal(){

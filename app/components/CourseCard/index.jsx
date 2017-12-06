@@ -30,16 +30,18 @@ class CourseCard extends React.Component {
 	}
 
 	downloadCourse() {
-		this.setState({showDownloadModal: true})	
+		console.log("click")
+		this.setState({showDownloadModal: true});
+		this.forceUpdate();
 	}
 
 	render(){
 
-		let modal = null;
+		// let modal = null;
 
-		if(this.state.showDownloadModal){
-			modal = <DownloadModal media={this.state.media} conf={this.props.conf} />
-		}
+		// if(this.state.showDownloadModal){
+		// 	modal = <DownloadModal media={this.state.media} conf={this.props.conf} />
+		// }
 
 		return (
 			<div className={styles.card}>
@@ -63,7 +65,7 @@ class CourseCard extends React.Component {
 				</Row>
 
 				{/* Download Modal */}
-				{modal}
+				<DownloadModal media={this.state.media} conf={this.props.conf} show={this.state.showDownloadModal} />
 			</div>
 		);
 	}
