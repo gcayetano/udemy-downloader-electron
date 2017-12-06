@@ -8,7 +8,7 @@ class DownloadModal extends React.Component {
 
 	constructor(props){
 		super(props);
-		console.log(this.props.show)
+
 		this.state = {
 			modalTitle: 'Descargando...',
 			finished: false,
