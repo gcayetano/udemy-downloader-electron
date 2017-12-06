@@ -8,7 +8,7 @@ import Footer from './components/Footer/index.jsx';
 import CourseList from './components/CoursesList/index.jsx';
 
 const settingsFile = path.join(__dirname, '..', 'config.json');
-const downloadPath = path.resolve(path.join(__dirname, '..', 'Descargas'));
+const downloadPath = path.resolve(path.join('./', 'Descargas'));
 
 let settingsFileExists = false;
 
@@ -19,7 +19,7 @@ class App extends React.Component {
 
 		this.state = {
 			showAuthModal: false,
-			auth: ""
+			conf: ""
 		}
 
 		this.openModal = this.openModal.bind(this);
@@ -39,7 +39,7 @@ class App extends React.Component {
 			if(!config.authorization || config.authorization == ""){
 				this.openModal();
 			}else{
-				this.setState({auth: config.authorization});
+				this.setState({conf: config});
 			}
 		}
 	}
@@ -54,7 +54,7 @@ class App extends React.Component {
 
 	saveSettings() {
 		let conf = {
-			"authorization": this.state.auth
+			"authorization": this.state.conf.authorization
 		}
 
 		if(!settingsFileExists){
@@ -67,11 +67,11 @@ class App extends React.Component {
 
 	handleChange(e) {
 		let value = e.target.value;
-		console.log(value)
+
 		if(!value.includes("Bearer")) {
-			this.setState({auth: "Bearer " + value});
+			this.setState({conf: {authorization: "Bearer " + value}});
 		}else{
-			this.setState({auth: value});
+			this.setState({conf: {authorization: value}});
 		}
 	}
 
@@ -79,7 +79,7 @@ class App extends React.Component {
 		return (
 			<Grid fluid={true}>
 				<Header />
-				<CourseList authorization={this.state.auth} />
+				<CourseList conf={this.state.conf} />
 				{/* <Footer /> */}
 
 				{/* Modal */}
@@ -88,7 +88,7 @@ class App extends React.Component {
 						<Modal.Title>Autenticación requerida</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<FormGroup controlId="formBasicText">
+						<FormGroup>
 							<ControlLabel>Authorization token</ControlLabel>
 							<FormControl
 								type="text"

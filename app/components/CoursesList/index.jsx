@@ -16,13 +16,12 @@ class CourseList extends React.Component {
 	
 	componentWillMount(){
         const header = {
-            'Authorization': this.props.authorization,
+            'Authorization': this.props.conf.authorization,
             'Access-Control-Allow-Origin': '*'
 		}
 		
         axios.get("https://www.udemy.com/api-2.0/users/me/subscribed-courses?fields%5Bcourse%5D=@min,visible_instructors,image_240x135,image_480x270&page=1&page_size=12", {headers: header}).then((resp) => {
             this.setState({courses: resp.data.results});
-            console.log(resp.data.results)
         });
     }
 
@@ -33,7 +32,7 @@ class CourseList extends React.Component {
 					{/* Cards */}
 					{
 						this.state.courses.map((item, i) => {
-							return <CourseCard key={i} title={item.title} image={item.image_240x135} author={item.visible_instructors[0].title} />
+							return <CourseCard key={i} title={item.title} image={item.image_240x135} author={item.visible_instructors[0].title} courseId={item.id} auth={this.props.conf.authorization} conf={this.props.conf} />
 						})
 					}
 				</Row>
