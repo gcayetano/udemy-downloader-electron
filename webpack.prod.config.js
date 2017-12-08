@@ -1,11 +1,12 @@
 const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 
 const BUILD_DIR = path.resolve(__dirname, 'public/built');
 const APP_DIR = path.resolve(__dirname, 'app');
 
 const config = {
-	watch: true,
+	// watch: true,
 	target: 'electron-renderer',
 	node: {
 		__dirname: true
@@ -14,10 +15,6 @@ const config = {
 	output: {
 		path: BUILD_DIR,
 		filename: 'bundle.js'
-	},
-	devServer: {
-		contentBase: './public',
-		publicPath: 'http://localhost:8080/built/'
 	},
 	resolve: {
 		extensions: [".jsx", ".js"]
@@ -32,7 +29,7 @@ const config = {
 		]
 	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin()
+		new UglifyJSPlugin()
 	]
 };
 
