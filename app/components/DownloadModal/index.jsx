@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Button, Modal, ProgressBar} from 'react-bootstrap';
+import {Button, Modal, ProgressBar} from 'react-bootstrap';
 import path from 'path';
 import fs from 'fs';
 import https from 'https';
@@ -15,7 +15,8 @@ class DownloadModal extends React.Component {
 			currentProgress: 0,
 			currentFile: '',
 			currentDownload: 0,
-			showModal: this.props.show
+			showModal: this.props.show,
+			ready: this.props.show
 		}
 
 		this.downloadFromUrl = this.downloadFromUrl.bind(this);
@@ -23,8 +24,10 @@ class DownloadModal extends React.Component {
 		this.closeModal = this.closeModal.bind(this);
 	}
 
-	componentDidMount(){
-		this.downloadCourse(this.props.media);
+	componentDidUpdate(){
+		if(this.props.show){
+			this.downloadCourse(this.props.media);
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -38,13 +41,19 @@ class DownloadModal extends React.Component {
 	}
 
 	downloadCourse(media){
-		// // Create download dir if not exists
+		// Create download dir if not exists
 		if(!fs.existsSync(this.props.conf.download_dir)){
 			fs.mkdirSync(this.props.conf.download_dir);
 		}
 
+		// Create course dir if not exists
+		let courseDir = path.join(this.props.conf.download_dir, this.props.courseTitle.replace(":", " -"));
+		if(!fs.existsSync(courseDir)){
+			fs.mkdirSync(courseDir);
+		}
+
 		media.map((m, i) => {
-			let chapterDir = path.resolve(path.join(this.props.conf.download_dir, m.title));
+			let chapterDir = path.resolve(path.join(courseDir, m.title));
 
 			// Create chapter dir
 			if(!fs.existsSync(chapterDir)){
@@ -70,8 +79,18 @@ class DownloadModal extends React.Component {
 
 	downloadFromUrl(url, dest, cb) {
 		var file = fs.createWriteStream(dest);
+		var self = this;
 		var request = https.get(url, function(response) {
 			response.pipe(file);
+
+			response.on('data', function(){
+				if(self.state.finished){
+					file.destroy(cb);
+					file.close(cb);
+					file.end(cb);
+				}
+			});
+
 			file.on('finish', function() {
 				file.close(cb);  // close() is async, call cb after close completes.
 			});

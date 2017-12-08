@@ -66,7 +66,7 @@ class CourseCard extends React.Component {
 				</Row>
 
 				{/* Download Modal */}
-				<DownloadModal media={this.state.media} conf={this.props.conf} show={this.state.showDownloadModal} />
+				<DownloadModal courseTitle={this.props.title} media={this.state.media} conf={this.props.conf} show={this.state.showDownloadModal} />
 			</div>
 		);
 	}
