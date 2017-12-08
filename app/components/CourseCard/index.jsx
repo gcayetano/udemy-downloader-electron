@@ -2,7 +2,7 @@ import React from 'react';
 import {Row, Button, Glyphicon, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import styles from './style.css';
 import downloader from '../../controllers/UdemyDownloader';
-import DownloadModal from '../DownloadModal/index.jsx'
+import DownloadModal from '../DownloadModal'
 
 const downloadTooltip = (
 	<Tooltip id="tooltip">Descargar curso</Tooltip>
@@ -15,7 +15,8 @@ class CourseCard extends React.Component {
 		
 		this.state = {
 			showDownloadModal: false,
-			media: []
+			media: [],
+			ready: false
 		}
 
 		this.downloadCourse = this.downloadCourse.bind(this);
@@ -24,15 +25,13 @@ class CourseCard extends React.Component {
 	componentDidMount(){
 		let uDownloader = downloader.UdemyDownloader.init(this.props.courseId, this.props.auth);
 		uDownloader.getCourseMedia(this.props.courseId, this.props.auth, (cmedia) => {
-			this.setState({media: cmedia});
+			this.setState({media: cmedia, ready: true});
 		})
 		
 	}
 
 	downloadCourse() {
-		console.log("click")
 		this.setState({showDownloadModal: true});
-		this.forceUpdate();
 	}
 
 	render(){
@@ -60,7 +59,9 @@ class CourseCard extends React.Component {
 				<Row bsClass={styles.cardBtn}>
 					{/* Card Download Button */}
 					<OverlayTrigger placement="bottom" overlay={downloadTooltip}>
-						<Button className="pull-right" onClick={this.downloadCourse}><Glyphicon glyph="circle-arrow-down" /></Button>
+						{
+							(this.state.ready) ? <Button className="pull-right" onClick={this.downloadCourse}><Glyphicon glyph="circle-arrow-down" /></Button> : <Button className="pull-right" onClick={this.downloadCourse} disabled><Glyphicon glyph="circle-arrow-down" /></Button>
+						}
 					</OverlayTrigger>
 				</Row>
 
