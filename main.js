@@ -3,19 +3,21 @@ const path = require('path');
 const url = require('url');
 
 // Enable live reload for all the files inside your project directory
-let electronHot = {
-  electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd')
-};
+// let electronHot = {
+//   electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd')
+// };
 
-require('electron-reload')(__dirname, electronHot);
+// require('electron-reload')(__dirname, electronHot);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow () {
+  let icon = path.join(__dirname, 'public/img/icon.png');
   // Create the browser window.
-  win = new BrowserWindow({width: 1100, height: 700});
+  win = new BrowserWindow({width: 1100, height: 700, icon: icon});
+  win.setMenu(null);
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -25,7 +27,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
