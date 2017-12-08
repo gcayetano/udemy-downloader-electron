@@ -1,7 +1,7 @@
 import React from 'react';
 import {Grid, Row} from 'react-bootstrap';
 import styles from './style.css';
-import CourseCard from '../CourseCard/index.jsx';
+import CourseCard from '../CourseCard';
 import axios from 'axios';
 
 class CourseList extends React.Component {
@@ -10,20 +10,47 @@ class CourseList extends React.Component {
 		super(props);
 		
         this.state = {
-			courses: []
+			courses: [],
+			ready: false
         };
 	}
 	
-	componentWillMount(){
-        const header = {
-            'Authorization': this.props.conf.authorization,
-            'Access-Control-Allow-Origin': '*'
+	componentDidMount(){
+        if(this.props.conf.authorization) {
+			this.loadCourses();
+		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if(this.props != nextProps || this.state != nextState){
+			return true;
+		}
+
+		return false;
+	}
+
+	componentDidUpdate() {
+		if(this.state.ready) {
+			this.loadCourses();
+		}
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.conf.authorization) {
+			this.setState({ready: true});
+		}
+	}
+
+	loadCourses() {
+		const header = {
+			'Authorization': this.props.conf.authorization,
+			'Access-Control-Allow-Origin': '*'
 		}
 		
-        axios.get("https://www.udemy.com/api-2.0/users/me/subscribed-courses?fields%5Bcourse%5D=@min,visible_instructors,image_240x135,image_480x270&page=1&page_size=12", {headers: header}).then((resp) => {
-            this.setState({courses: resp.data.results});
-        });
-    }
+		axios.get("https://www.udemy.com/api-2.0/users/me/subscribed-courses?fields%5Bcourse%5D=@min,visible_instructors,image_240x135,image_480x270&page=1&page_size=12", {headers: header}).then((resp) => {
+			this.setState({courses: resp.data.results});
+		});
+	}
 
 	render() {
 		return (
