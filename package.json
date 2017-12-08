@@ -9,7 +9,12 @@
     "babel": "babel",
     "webpack": "webpack",
     "electron": "./node_modules/.bin/electron .",
-    "electron-rebuild": "./node_modules/.bin/electron-rebuild"
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild",
+    "build": "webpack --config webpack.prod.config.js",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/build/mac/icon.icns --prune=true --out=dist",
+    "package-win": "electron-packager . 'Udemy downloader' --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/build/win/icon.ico --prune=true --out=dist --version-string.CompanyName=gcayetano --version-string.FileDescription=\"Download your courses from Udemy website\" --version-string.ProductName=\"Udemy downloader\"", 
+    "package-win64": "electron-packager . 'Udemy downloader' --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/build/win/icon.ico --prune=true --out=dist --version-string.CompanyName=gcayetano --version-string.FileDescription=\"Download your courses from Udemy website\" --version-string.ProductName=\"Udemy downloader\"",   
+    "package-linux": "electron-packager . 'Udemy downloader' --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/build/linux/icon.png --prune=true --out=dist"
   },
   "repository": {
     "type": "git",
@@ -44,6 +49,7 @@
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.1.2",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4"
