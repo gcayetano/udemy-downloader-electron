@@ -3,9 +3,10 @@ import {render} from 'react-dom';
 import {Grid, Modal, Button, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 import path from 'path';
 import fs from 'fs';
-import Header from './components/Header/index.jsx';
-import Footer from './components/Footer/index.jsx';
-import CourseList from './components/CoursesList/index.jsx';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import CourseList from './components/CoursesList';
+import AuthModal from './components/AuthModal';
 
 const settingsFile = path.join(__dirname, '..', 'config.json');
 const downloadPath = path.resolve(path.join('./', 'Descargas'));
@@ -18,14 +19,15 @@ class App extends React.Component {
 		super(props);
 
 		this.state = {
-			showAuthModal: false,
-			conf: ""
+			showModal: false,
+			conf: {}
 		}
 
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.saveSettings = this.saveSettings.bind(this);
+		this.updateAppConf = this.updateAppConf.bind(this);
 	}
 
 	componentWillMount() {
@@ -45,24 +47,11 @@ class App extends React.Component {
 	}
 
 	openModal() {
-		this.setState({ showAuthModal: true });
+		this.setState({ showModal: true });
 	}
 
 	closeModal() {
-		this.setState({ showAuthModal: false });
-	}
-
-	saveSettings() {
-		let conf = {
-			"authorization": this.state.conf.authorization
-		}
-
-		if(!settingsFileExists){
-			conf.download_dir = downloadPath;
-		}
-
-		fs.writeFileSync(settingsFile, JSON.stringify(conf, null, 2));
-		this.closeModal();
+		this.setState({ showModal: false });
 	}
 
 	handleChange(e) {
@@ -75,33 +64,34 @@ class App extends React.Component {
 		}
 	}
 
+	saveSettings() {
+		let conf = {
+			authorization: this.state.conf.authorization,
+			download_dir: settingsFile
+		}
+
+		if(!settingsFileExists){
+			conf.download_dir = downloadPath;
+		}
+
+		fs.writeFileSync(settingsFile, JSON.stringify(conf, null, 2));
+		this.closeModal();
+	}
+	
+	updateAppConf(newConf){
+		this.setState({conf: newConf});
+	}
+
 	render() {
 		return (
 			<Grid fluid={true}>
-				<Header />
+				<Header conf={this.state.conf} settingsFile={settingsFile} updateAppConf={this.updateAppConf} />
 				<CourseList conf={this.state.conf} />
 				{/* <Footer /> */}
 
-				{/* Modal */}
-				<Modal show={this.state.showAuthModal} onHide={this.closeModal}>
-					<Modal.Header closeButton>
-						<Modal.Title>Autenticación requerida</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<FormGroup>
-							<ControlLabel>Authorization token</ControlLabel>
-							<FormControl
-								type="text"
-								placeholder="Introduce tu token de autenticación"
-								onChange={this.handleChange}
-							/>
-						</FormGroup>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button onClick={this.closeModal}>Cerrar</Button>
-						<Button bsStyle="primary" onClick={this.saveSettings}>Guardar</Button>
-					</Modal.Footer>
-				</Modal>
+				{
+					(this.state.showModal === true) ? <AuthModal show={this.state.showModal} handleChange={this.handleChange} saveSettings={this.saveSettings} /> : null
+				}
 			</Grid>	
 		)
 	}
