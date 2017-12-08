@@ -41,6 +41,7 @@ class DownloadModal extends React.Component {
 	}
 
 	downloadCourse(media){
+		// console.log(media)
 		// Create download dir if not exists
 		if(!fs.existsSync(this.props.conf.download_dir)){
 			fs.mkdirSync(this.props.conf.download_dir);
@@ -85,9 +86,9 @@ class DownloadModal extends React.Component {
 
 			response.on('data', function(){
 				if(self.state.finished){
-					file.destroy(cb);
-					file.close(cb);
-					file.end(cb);
+					file.destroy();
+					file.close();
+					file.end();
 				}
 			});
 
