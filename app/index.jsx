@@ -75,6 +75,7 @@ class App extends React.Component {
 		}
 
 		fs.writeFileSync(settingsFile, JSON.stringify(conf, null, 2));
+		this.setState({conf: conf});
 		this.closeModal();
 	}
 	

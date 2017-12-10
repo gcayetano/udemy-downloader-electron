@@ -21,14 +21,6 @@ class CourseList extends React.Component {
 		}
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
-		if(this.props != nextProps || this.state != nextState){
-			return true;
-		}
-
-		return false;
-	}
-
 	componentDidUpdate() {
 		if(this.state.ready) {
 			this.loadCourses();
@@ -59,7 +51,7 @@ class CourseList extends React.Component {
 					{/* Cards */}
 					{
 						this.state.courses.map((item, i) => {
-							return <CourseCard key={i} title={item.title} image={item.image_240x135} author={item.visible_instructors[0].title} courseId={item.id} auth={this.props.conf.authorization} conf={this.props.conf} />
+							return <CourseCard key={i} title={item.title} image={item.image_240x135} author={item.visible_instructors[0].title} courseId={item.id} conf={this.props.conf} />
 						})
 					}
 				</Row>

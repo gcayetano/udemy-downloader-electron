@@ -23,11 +23,10 @@ class CourseCard extends React.Component {
 	}
 
 	componentDidMount(){
-		let uDownloader = downloader.UdemyDownloader.init(this.props.courseId, this.props.auth);
-		uDownloader.getCourseMedia(this.props.courseId, this.props.auth, (cmedia) => {
+		let uDownloader = downloader.UdemyDownloader.init(this.props.courseId, this.props.conf.authorization);
+		uDownloader.getCourseMedia(this.props.courseId, this.props.conf.authorization, (cmedia) => {
 			this.setState({media: cmedia, ready: true});
-		})
-		
+		});
 	}
 
 	downloadCourse() {
