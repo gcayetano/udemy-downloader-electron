@@ -83,7 +83,7 @@ function udemyDownloader(courseID, token) {
                 sorted.map((chapter, i) => {
                     sorted[i].lectures = sorted[i].lectures.sort((a, b) => {
                         a.object_index - b.object_index;
-                    })
+                    });
                 });
 
                 callback(sorted);

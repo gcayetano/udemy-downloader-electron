@@ -3,6 +3,8 @@ import {Button, Modal, ProgressBar} from 'react-bootstrap';
 import path from 'path';
 import fs from 'fs';
 import https from 'https';
+import request from 'request';
+import Promise from 'bluebird';
 
 class DownloadModal extends React.Component {
 
@@ -20,6 +22,8 @@ class DownloadModal extends React.Component {
 		}
 
 		this.downloadFromUrl = this.downloadFromUrl.bind(this);
+	
+		this.downloadRecrusive = this.downloadRecrusive.bind(this);
 		this.downloadCourse = this.downloadCourse.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
@@ -41,7 +45,6 @@ class DownloadModal extends React.Component {
 	}
 
 	downloadCourse(media){
-		// console.log(media)
 		// Create download dir if not exists
 		if(!fs.existsSync(this.props.conf.download_dir)){
 			fs.mkdirSync(this.props.conf.download_dir);
@@ -52,6 +55,10 @@ class DownloadModal extends React.Component {
 		if(!fs.existsSync(courseDir)){
 			fs.mkdirSync(courseDir);
 		}
+
+		let lecturesArr = [];
+		let self = this;
+
 
 		media.map((m, i) => {
 			let chapterDir = path.resolve(path.join(courseDir, m.title));
@@ -68,13 +75,34 @@ class DownloadModal extends React.Component {
 					let filename = lecture.object_index + ". " + lecture.title.replace(":", " -").replace("/", "-") + ".mp4";
 					let link = lecture.link;
 
-					if(!this.state.finished) {
-						this.downloadFromUrl(link, path.resolve(path.join(chapterDir, filename)), () =>{
-							this.setState({currentProgress: this.state.currentProgress+1, currentDownload: this.state.currentDownload+1, currentFile: filename});
-						});
-					}	
+					// if(!this.state.finished) {
+					// 	this.downloadFromUrl(link, path.resolve(path.join(chapterDir, filename)), () =>{
+					// 		this.setState({currentProgress: this.state.currentProgress+1, currentDownload: this.state.currentDownload+1, currentFile: filename});
+					// 	});
+					// }	
+					lecturesArr.push({link: lecture.link, dir: path.resolve(path.join(chapterDir, filename)), filename: filename, index: lecture.object_index, downloaded: false});
 				}
 			});
+		});
+
+		let lecturesSorted = (lecturesArr.sort((a, b) => {
+			return a.index - b.index;
+		}));
+		
+		Promise.each(lecturesSorted, lecture => new Promise((resolve, reject) => {
+			if(!lecture.downloaded){
+				console.log('Downloading file: ' + lecture.filename);
+				request(lecture.link).on('error', reject).pipe(fs.createWriteStream(lecture.dir)).on('finish', () => {
+					console.log('Downloaded file: ' + lecture.filename);
+					lecture.downloaded = true;
+					resolve();
+					//self.setState({currentProgress: self.state.currentProgress+1, currentDownload: self.state.currentDownload+1, currentFile: lecture.filename});				
+				});
+			}
+		})).then(() => {
+			console.log('All files Downloaded!');
+		}).catch(err => {
+			console.error('Failed: ' + err.message);
 		});
 	}
 
@@ -84,13 +112,13 @@ class DownloadModal extends React.Component {
 		var request = https.get(url, function(response) {
 			response.pipe(file);
 
-			response.on('data', function(){
-				if(self.state.finished){
-					file.destroy();
-					file.close();
-					file.end();
-				}
-			});
+			// response.on('data', function(){
+			// 	if(self.state.finished){
+			// 		file.destroy();
+			// 		file.close();
+			// 		file.end();
+			// 	}
+			// });
 
 			file.on('finish', function() {
 				file.close(cb);  // close() is async, call cb after close completes.
@@ -99,6 +127,42 @@ class DownloadModal extends React.Component {
 			fs.unlink(dest); // Delete the file async. (But we don't check the result)
 			if (cb) cb(err.message);
 		});
+	}
+
+	downloadRecrusive(lecturesArray, dir, index, cb) {
+		var count = lecturesArray.length - 1;
+		let lecture = lecturesArray[index];
+		var self = this;
+
+		// console.log(lecturesArray, dir, index)
+		if(lecture && lecture.asset_type && lecture.asset_type === 'Video'){
+			let filename = lecture.object_index + ". " + lecture.title.replace(":", " -").replace("/", "-") + ".mp4";
+			let dest = path.resolve(path.join(dir, filename)) ;
+			// let file;
+			// var request = https.get(lecture.link, function(response) {
+			// 	file = fs.createWriteStream(dest);
+			// 	response.pipe(file);
+			// }).on('finish', () => {
+			// 	file.close();
+			// 	if (index + 1 < count) {
+			// 		this.downloadRecrusive(lecturesArray, dir, index+1, cb);
+			// 	}
+			// })
+
+			var stream = request(lecture.link).pipe(fs.createWriteStream(dest));
+			
+			stream.on('finish', function () {
+				console.log("Downloaded", index);
+				stream.close();
+				if (index + 1 < count) {
+					//Finished, download next file
+					self.downloadRecrusive(lecturesArray, dir, index+1, cb);
+				}
+			});
+		}else{
+			self.downloadRecrusive(lecturesArray, dir, index+1, cb);
+		}
+		
 	}
 
 	render(){
