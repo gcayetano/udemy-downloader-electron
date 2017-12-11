@@ -14,6 +14,7 @@ class DownloadModal extends React.Component {
 		this.state = {
 			modalTitle: 'Descargando...',
 			finished: false,
+			downloading: false,
 			currentProgress: 0,
 			currentFile: '',
 			currentDownload: 0,
@@ -21,15 +22,12 @@ class DownloadModal extends React.Component {
 			ready: this.props.show
 		}
 
-		this.downloadFromUrl = this.downloadFromUrl.bind(this);
-	
-		this.downloadRecrusive = this.downloadRecrusive.bind(this);
 		this.downloadCourse = this.downloadCourse.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
 
 	componentDidUpdate(){
-		if(this.props.show){
+		if(this.props.show && !this.state.downloading){
 			this.downloadCourse(this.props.media);
 		}
 	}
@@ -45,6 +43,11 @@ class DownloadModal extends React.Component {
 	}
 
 	downloadCourse(media){
+		// Set state to "downloading" for avoid call this function for every setState call
+		if(!this.state.downloading){
+			this.setState({downloading: true})
+		}
+
 		// Create download dir if not exists
 		if(!fs.existsSync(this.props.conf.download_dir)){
 			fs.mkdirSync(this.props.conf.download_dir);
@@ -74,13 +77,8 @@ class DownloadModal extends React.Component {
 				if(lecture.asset_type === 'Video'){
 					let filename = lecture.object_index + ". " + lecture.title.replace(":", " -").replace("/", "-") + ".mp4";
 					let link = lecture.link;
-
-					// if(!this.state.finished) {
-					// 	this.downloadFromUrl(link, path.resolve(path.join(chapterDir, filename)), () =>{
-					// 		this.setState({currentProgress: this.state.currentProgress+1, currentDownload: this.state.currentDownload+1, currentFile: filename});
-					// 	});
-					// }	
-					lecturesArr.push({link: lecture.link, dir: path.resolve(path.join(chapterDir, filename)), filename: filename, index: lecture.object_index, downloaded: false});
+	
+					lecturesArr.push({link: lecture.link, dir: path.resolve(path.join(chapterDir, filename)), filename: filename, index: lecture.object_index});
 				}
 			});
 		});
@@ -88,81 +86,20 @@ class DownloadModal extends React.Component {
 		let lecturesSorted = (lecturesArr.sort((a, b) => {
 			return a.index - b.index;
 		}));
-		
+
 		Promise.each(lecturesSorted, lecture => new Promise((resolve, reject) => {
-			if(!lecture.downloaded){
-				console.log('Downloading file: ' + lecture.filename);
+			if(!self.state.finished){
 				request(lecture.link).on('error', reject).pipe(fs.createWriteStream(lecture.dir)).on('finish', () => {
-					console.log('Downloaded file: ' + lecture.filename);
-					lecture.downloaded = true;
+					self.setState({currentProgress: self.state.currentProgress+1, currentDownload: self.state.currentDownload+1, currentFile: lecture.filename});				
 					resolve();
-					//self.setState({currentProgress: self.state.currentProgress+1, currentDownload: self.state.currentDownload+1, currentFile: lecture.filename});				
 				});
 			}
 		})).then(() => {
-			console.log('All files Downloaded!');
+			// console.log('All files Downloaded!');
+			self.setState({modalTitle: 'Descarga completada', finished: true});
 		}).catch(err => {
 			console.error('Failed: ' + err.message);
 		});
-	}
-
-	downloadFromUrl(url, dest, cb) {
-		var file = fs.createWriteStream(dest);
-		var self = this;
-		var request = https.get(url, function(response) {
-			response.pipe(file);
-
-			// response.on('data', function(){
-			// 	if(self.state.finished){
-			// 		file.destroy();
-			// 		file.close();
-			// 		file.end();
-			// 	}
-			// });
-
-			file.on('finish', function() {
-				file.close(cb);  // close() is async, call cb after close completes.
-			});
-		}).on('error', function(err) { // Handle errors
-			fs.unlink(dest); // Delete the file async. (But we don't check the result)
-			if (cb) cb(err.message);
-		});
-	}
-
-	downloadRecrusive(lecturesArray, dir, index, cb) {
-		var count = lecturesArray.length - 1;
-		let lecture = lecturesArray[index];
-		var self = this;
-
-		// console.log(lecturesArray, dir, index)
-		if(lecture && lecture.asset_type && lecture.asset_type === 'Video'){
-			let filename = lecture.object_index + ". " + lecture.title.replace(":", " -").replace("/", "-") + ".mp4";
-			let dest = path.resolve(path.join(dir, filename)) ;
-			// let file;
-			// var request = https.get(lecture.link, function(response) {
-			// 	file = fs.createWriteStream(dest);
-			// 	response.pipe(file);
-			// }).on('finish', () => {
-			// 	file.close();
-			// 	if (index + 1 < count) {
-			// 		this.downloadRecrusive(lecturesArray, dir, index+1, cb);
-			// 	}
-			// })
-
-			var stream = request(lecture.link).pipe(fs.createWriteStream(dest));
-			
-			stream.on('finish', function () {
-				console.log("Downloaded", index);
-				stream.close();
-				if (index + 1 < count) {
-					//Finished, download next file
-					self.downloadRecrusive(lecturesArray, dir, index+1, cb);
-				}
-			});
-		}else{
-			self.downloadRecrusive(lecturesArray, dir, index+1, cb);
-		}
-		
 	}
 
 	render(){
