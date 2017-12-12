@@ -66,11 +66,14 @@ class DownloadModal extends React.Component {
 		media.map((m, i) => {
 			let chapterDir = path.resolve(path.join(courseDir, m.title));
 
-			// Create chapter dir
-			if(!fs.existsSync(chapterDir)){
-				fs.mkdirSync(chapterDir);
+			// Create chapter dir if chapter contains video lectures
+			if(m.lectures.find(x => x.asset_type === 'Video')){
+				if(!fs.existsSync(chapterDir)){
+					fs.mkdirSync(chapterDir);
+				}
 			}
 
+			// Create chapter dir
 			m.lectures.map((l, j) => {
 				let lecture = l;
 				
