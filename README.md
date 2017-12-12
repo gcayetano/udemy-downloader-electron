@@ -34,7 +34,7 @@ npm run start
 Open a command shell and go to project directory
 
 ```
-$ cd paht/to/project/dir
+$ cd path/to/project/dir
 ```
 
 Run electron
