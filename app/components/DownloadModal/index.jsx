@@ -15,6 +15,7 @@ class DownloadModal extends React.Component {
 			modalTitle: 'Descargando...',
 			finished: false,
 			downloading: false,
+			style: 'info',
 			currentProgress: 0,
 			currentFile: '',
 			currentDownload: 0,
@@ -92,16 +93,23 @@ class DownloadModal extends React.Component {
 
 		Promise.each(lecturesSorted, lecture => new Promise((resolve, reject) => {
 			if(!self.state.finished){
-				request(lecture.link).on('error', reject).pipe(fs.createWriteStream(lecture.dir)).on('finish', () => {
+				request(lecture.link).on('error', () => {
+					self.setState({modalTitle: 'Ha ocurrido un error', finished: true, style: 'danger'});
+					reject();
+				}).pipe(fs.createWriteStream(lecture.dir)).on('finish', () => {
 					self.setState({currentProgress: self.state.currentProgress+1, currentDownload: self.state.currentDownload+1, currentFile: lecture.filename});				
 					resolve();
+				}).on('error', () => {
+					self.setState({modalTitle: 'Ha ocurrido un error', finished: true, style: 'danger'});
+					reject();
 				});
 			}
 		})).then(() => {
 			// console.log('All files Downloaded!');
-			self.setState({modalTitle: 'Descarga completada', finished: true});
+			self.setState({modalTitle: 'Descarga completada', finished: true, style: 'success'});
 		}).catch(err => {
-			console.error('Failed: ' + err.message);
+			// console.error('Failed: ' + err.message);
+			self.setState({modalTitle: 'Ha ocurrido un error', finished: true, style: 'danger'});
 		});
 	}
 
@@ -130,7 +138,9 @@ class DownloadModal extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 					<h5>{this.state.currentFile}</h5>
-					<ProgressBar active now={this.state.currentProgress} min={0} max={maxProgress} striped={true} label={`${this.state.currentDownload}/${maxProgress}`} />
+					{
+						(this.state.finished) ? <ProgressBar bsStyle={this.state.style} active now={this.state.currentProgress} min={0} max={maxProgress} striped={true} label={`${this.state.currentDownload}/${maxProgress}`} /> : <ProgressBar active now={this.state.currentProgress} min={0} max={maxProgress} striped={true} label={`${this.state.currentDownload}/${maxProgress}`} />
+					}
 				</Modal.Body>
 				<Modal.Footer>
 					{closeButton}
