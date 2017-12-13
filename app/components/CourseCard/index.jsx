@@ -53,7 +53,7 @@ class CourseCard extends React.Component {
 				</Row>
 				<Row bsClass={styles.cardDesc}>
 					{/* Card Description */}
-					<span>{this.props.author}</span>
+					<p>{this.props.author}</p>
 				</Row>
 				<Row bsClass={styles.cardBtn}>
 					{/* Card Download Button */}

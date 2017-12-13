@@ -3,6 +3,7 @@
     height: 330px;
     width: 250px;
     border: 1px solid #cfcfcf;
+    position: relative;
 }
 
 .cardImage {
@@ -35,7 +36,7 @@
     margin-top: 15px;
 }
 
-.cardDesc > span {
+.cardDesc > p {
     margin-top: 10px;
     font-size: 14px;
     margin-left: 10px;
@@ -48,9 +49,9 @@
 
     margin-top: 40px;
     margin-right: 10px;
-    bottom: -35px;
+    bottom: 10px;
     width: 238px;
-    position: relative;
+    position: absolute;
 }
 
 .cardBtn > button {
