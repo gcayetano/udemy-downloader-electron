@@ -2,9 +2,14 @@ import React from 'react';
 import {Row, Col, Button, Glyphicon, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import styles from './style.css';
 import SettingsModal from '../SettingsModal';
+import {shell} from 'electron';
 
 const settingsTooltip = (
 	<Tooltip id="tooltip">Configuración</Tooltip>
+);
+
+const downloadDirTooltip = (
+	<Tooltip id="tooltip">Ver descargas</Tooltip>
 );
 
 class Header extends React.Component {
@@ -18,6 +23,8 @@ class Header extends React.Component {
 
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
+
+		this.openDownloadDir = this.openDownloadDir.bind(this);
 	}
 
 	openModal() {
@@ -26,6 +33,10 @@ class Header extends React.Component {
 
 	closeModal() {
 		this.setState({showModal: false});
+	}
+
+	openDownloadDir() {
+		shell.openItem(this.props.conf.download_dir);
 	}
 
 	render(){
@@ -38,6 +49,9 @@ class Header extends React.Component {
 					<Col md={10} xsHidden={true}>
 						<OverlayTrigger placement="bottom" overlay={settingsTooltip}>
 							<Button className={styles.settingsBtn} onClick={this.openModal}><Glyphicon glyph="wrench" /></Button>
+						</OverlayTrigger>
+						<OverlayTrigger placement="bottom" overlay={downloadDirTooltip}>
+							<Button className={styles.settingsBtn} onClick={this.openDownloadDir}><Glyphicon glyph="folder-open" /></Button>
 						</OverlayTrigger>
 					</Col>
 				</Row>
