@@ -70,7 +70,8 @@ function udemyDownloader(courseID, token) {
                             title: r.title,
                             asset_id: r.asset.id,
                             asset_type: r.asset.asset_type,
-                            object_index: r.object_index
+                            object_index: r.object_index,
+                            original_filename: r.asset.filename
                         }
 
                         getLectureLink(courseID, token, lecture).then((l) => {
