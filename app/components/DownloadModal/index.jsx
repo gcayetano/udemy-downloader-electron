@@ -79,7 +79,7 @@ class DownloadModal extends React.Component {
 				let lecture = l;
 				
 				if(lecture.asset_type === 'Video'){
-					let filename = lecture.object_index + ". " + lecture.title.replace(":", " -").replace("/", "-") + ".mp4";
+					let filename = lecture.object_index + ". " + lecture.title.replace(/[|*¿?":<>\/\\]/gi, "") + ".mp4";
 					let link = lecture.link;
 	
 					lecturesArr.push({link: lecture.link, dir: path.resolve(path.join(chapterDir, filename)), filename: filename, index: lecture.object_index});
